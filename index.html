@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>SP QuickCalc — Pro Suite</title>
+<meta name="description" content="A fast, offline-capable calculator suite with standard, scientific, EMI, date, and unit-conversion tools.">
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0b0f14">
+<meta name="color-scheme" content="dark light">
+
+<!-- Favicons -->
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="icons/icon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
+
+<!-- iOS home-screen app behavior -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="QuickCalc">
+
+<!-- Android / Chrome home-screen -->
+<meta name="mobile-web-app-capable" content="yes">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="styles.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.js"></script>
+</head>
+<body>
+
+<div class="app-shell">
+  <div class="app-container">
+
+    <header class="app-header">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20"><rect x="3" y="2" width="18" height="20" rx="3" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="6" y="5" width="12" height="4" rx="1" fill="currentColor"/><circle cx="7.5" cy="13" r="1.1" fill="currentColor"/><circle cx="12" cy="13" r="1.1" fill="currentColor"/><circle cx="16.5" cy="13" r="1.1" fill="currentColor"/><circle cx="7.5" cy="17" r="1.1" fill="currentColor"/><circle cx="12" cy="17" r="1.1" fill="currentColor"/><circle cx="16.5" cy="17" r="1.1" fill="currentColor"/></svg>
+        </span>
+        <div>
+          <h1>SP QuickCalc</h1>
+          <p>Pro Suite — Standard · Scientific · Finance · Date · Units</p>
+        </div>
+      </div>
+      <button class="icon-btn" id="theme-toggle" title="Toggle theme" aria-label="Toggle theme">
+        <svg id="theme-icon" viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M12 4.5a1 1 0 0 1-1-1V2a1 1 0 1 1 2 0v1.5a1 1 0 0 1-1 1Zm0 15a1 1 0 0 1 1 1V22a1 1 0 1 1-2 0v-1.5a1 1 0 0 1 1-1ZM4.5 12a1 1 0 0 1-1 1H2a1 1 0 1 1 0-2h1.5a1 1 0 0 1 1 1Zm18 0a1 1 0 0 1-1 1H20a1 1 0 1 1 0-2h1.5a1 1 0 0 1 1 1ZM6.34 6.34a1 1 0 0 1-1.41 0L3.87 5.28a1 1 0 1 1 1.41-1.41l1.06 1.05a1 1 0 0 1 0 1.42Zm12.73 12.73a1 1 0 0 1-1.41 0l-1.06-1.06a1 1 0 0 1 1.41-1.41l1.06 1.06a1 1 0 0 1 0 1.41ZM6.34 17.66a1 1 0 0 1 0 1.41l-1.06 1.06a1 1 0 1 1-1.41-1.41l1.06-1.06a1 1 0 0 1 1.41 0Zm12.73-12.73a1 1 0 0 1 0 1.41l-1.06 1.06a1 1 0 1 1-1.41-1.41l1.06-1.06a1 1 0 0 1 1.41 0ZM12 7a5 5 0 1 1 0 10a5 5 0 0 1 0-10Z"/></svg>
+      </button>
+    </header>
+
+    <nav class="calc-tabs" id="tab-nav">
+      <button class="tab-btn active" data-tab="standard">Standard</button>
+      <button class="tab-btn" data-tab="sci-eng">Scientific</button>
+      <button class="tab-btn" data-tab="financial">EMI</button>
+      <button class="tab-btn" data-tab="age-date">Date</button>
+      <button class="tab-btn" data-tab="convert">Units</button>
+    </nav>
+
+    <!-- 1. Standard Calculator -->
+    <section id="standard" class="calc-section active">
+      <div class="display-wrap">
+        <div class="display-sub" id="std-expr">&nbsp;</div>
+        <div class="display" id="std-display">0</div>
+        <div class="display-actions">
+          <button class="chip-btn" id="std-history-btn" title="History">History</button>
+          <button class="chip-btn" id="std-copy-btn" title="Copy result">Copy</button>
+        </div>
+      </div>
+      <div class="keypad std-keypad">
+        <button class="btn btn-action" data-act="clear" data-target="std">AC</button>
+        <button class="btn btn-action" data-act="del" data-target="std">DEL</button>
+        <button class="btn btn-op" data-act="append" data-target="std" data-val="%">%</button>
+        <button class="btn btn-op" data-act="append" data-target="std" data-val="/">÷</button>
+
+        <button class="btn btn-num" data-act="append" data-target="std" data-val="7">7</button>
+        <button class="btn btn-num" data-act="append" data-target="std" data-val="8">8</button>
+        <button class="btn btn-num" data-act="append" data-target="std" data-val="9">9</button>
+        <button class="btn btn-op" data-act="append" data-target="std" data-val="*">×</button>
+
+        <button class="btn btn-num" data-act="append" data-target="std" data-val="4">4</button>
+        <button class="btn btn-num" data-act="append" data-target="std" data-val="5">5</button>
+        <button class="btn btn-num" data-act="append" data-target="std" data-val="6">6</button>
+        <button class="btn btn-op" data-act="append" data-target="std" data-val="-">−</button>
+
+        <button class="btn btn-num" data-act="append" data-target="std" data-val="1">1</button>
+        <button class="btn btn-num" data-act="append" data-target="std" data-val="2">2</button>
+        <button class="btn btn-num" data-act="append" data-target="std" data-val="3">3</button>
+        <button class="btn btn-op" data-act="append" data-target="std" data-val="+">+</button>
+
+        <button class="btn btn-num" data-act="append" data-target="std" data-val="(">(</button>
+        <button class="btn btn-num" data-act="append" data-target="std" data-val="0">0</button>
+        <button class="btn btn-num" data-act="append" data-target="std" data-val=".">.</button>
+        <button class="btn btn-num" data-act="append" data-target="std" data-val=")">)</button>
+
+        <button class="btn btn-equals std-wide" id="std-equals">=</button>
+      </div>
+    </section>
+
+    <!-- 2. Scientific Calculator -->
+    <section id="sci-eng" class="calc-section">
+      <div class="status-bar">
+        <button class="status-pill" id="btn-angle" title="Toggle angle unit">DEG</button>
+        <span class="status-indicator" id="status-shift">2ND</span>
+        <span class="status-indicator" id="status-mem">M</span>
+        <span class="status-fill"></span>
+        <button class="status-pill ghost" id="sci-history-btn">History</button>
+      </div>
+
+      <div class="display-wrap">
+        <div class="display-sub" id="sci-expr">&nbsp;</div>
+        <div class="display" id="sci-eng-display">0</div>
+        <div class="display-actions">
+          <button class="chip-btn" id="sci-copy-btn" title="Copy result">Copy</button>
+        </div>
+      </div>
+
+      <div class="keypad sci-func-keypad">
+        <button class="btn btn-shift" id="btn-shift">2nd</button>
+        <button class="btn btn-action" data-act="clear" data-target="sci">AC</button>
+        <button class="btn btn-action" data-act="del" data-target="sci">DEL</button>
+        <button class="btn btn-mem" data-act="mclear">MC</button>
+
+        <button class="btn btn-mem" data-act="mrecall">MR</button>
+        <button class="btn btn-mem" data-act="mplus">M+</button>
+        <button class="btn btn-mem" data-act="mminus">M−</button>
+        <button class="btn btn-func" data-act="append" data-target="sci" data-val="(">(</button>
+
+        <button class="btn btn-func multi-key" data-base="sin(" data-shift="asin(" data-shift-display="asin">sin</button>
+        <button class="btn btn-func multi-key" data-base="cos(" data-shift="acos(" data-shift-display="acos">cos</button>
+        <button class="btn btn-func multi-key" data-base="tan(" data-shift="atan(" data-shift-display="atan">tan</button>
+        <button class="btn btn-func" data-act="append" data-target="sci" data-val=")">)</button>
+
+        <button class="btn btn-func multi-key" data-base="log10(" data-shift="10^(" data-shift-display="10ˣ">log</button>
+        <button class="btn btn-func multi-key" data-base="log(" data-shift="exp(" data-shift-display="eˣ">ln</button>
+        <button class="btn btn-func" data-act="append" data-target="sci" data-val="e">e</button>
+        <button class="btn btn-func" data-act="append" data-target="sci" data-val="%">%</button>
+
+        <button class="btn btn-func multi-key" data-base="^2" data-shift="^3" data-shift-display="x³">x²</button>
+        <button class="btn btn-func multi-key" data-base="sqrt(" data-shift="cbrt(" data-shift-display="∛x">√x</button>
+        <button class="btn btn-func multi-key" data-base="1/(" data-shift="abs(" data-shift-display="|x|">1/x</button>
+        <button class="btn btn-func" data-act="append" data-target="sci" data-val="^">xʸ</button>
+
+        <button class="btn btn-func" data-act="append" data-target="sci" data-val="!">n!</button>
+        <button class="btn btn-func" data-act="append" data-target="sci" data-val="combinations(">nCr</button>
+        <button class="btn btn-func" data-act="append" data-target="sci" data-val="permutations(">nPr</button>
+        <button class="btn btn-func" data-act="append" data-target="sci" data-val="pi">π</button>
+      </div>
+
+      <div class="keypad sci-num-keypad">
+        <button class="btn btn-func" data-act="ans">Ans</button>
+        <button class="btn btn-op" data-act="append" data-target="sci" data-val="/">÷</button>
+        <button class="btn btn-op" data-act="append" data-target="sci" data-val="*">×</button>
+        <button class="btn btn-op" data-act="append" data-target="sci" data-val="(">(</button>
+        <button class="btn btn-num" data-act="append" data-target="sci" data-val="8">8</button>
+        <button class="btn btn-num" data-act="append" data-target="sci" data-val="9">9</button>
+        <button class="btn btn-op" data-act="append" data-target="sci" data-val="-">−</button>
+
+        <button class="btn btn-num" data-act="append" data-target="sci" data-val="4">4</button>
+        <button class="btn btn-num" data-act="append" data-target="sci" data-val="5">5</button>
+        <button class="btn btn-num" data-act="append" data-target="sci" data-val="6">6</button>
+        <button class="btn btn-op sci-plus" data-act="append" data-target="sci" data-val="+">+</button>
+
+        <button class="btn btn-num" data-act="append" data-target="sci" data-val="1">1</button>
+        <button class="btn btn-num" data-act="append" data-target="sci" data-val="2">2</button>
+        <button class="btn btn-num" data-act="append" data-target="sci" data-val="3">3</button>
+        <button class="btn btn-equals sci-equals" id="sci-equals" rowspan="2">=</button>
+
+        <button class="btn btn-num sci-zero" data-act="append" data-target="sci" data-val="0">0</button>
+        <button class="btn btn-num" data-act="append" data-target="sci" data-val=".">.</button>
+      </div>
+    </section>
+
+    <!-- 3. Financial / EMI Calculator -->
+    <section id="financial" class="calc-section">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="loan-amount">Loan Amount</label>
+          <div class="input-affix">
+            <select id="currency-symbol" class="affix-select" aria-label="Currency">
+              <option value="₹" selected>₹</option>
+              <option value="$">$</option>
+              <option value="€">€</option>
+              <option value="£">£</option>
+            </select>
+            <input type="text" id="loan-amount" placeholder="500000" inputmode="decimal" autocomplete="off" enterkeyhint="done"/>
+          </div>
+        </div>
+      </div>
+      <div class="form-row two-col">
+        <div class="form-group">
+          <label for="interest-rate">Interest Rate (annual %)</label>
+          <input type="text" id="interest-rate" placeholder="8.5" inputmode="decimal" autocomplete="off" enterkeyhint="done"/>
+        </div>
+        <div class="form-group">
+          <label for="loan-tenure">Tenure</label>
+          <div class="input-affix">
+            <input type="text" id="loan-tenure" placeholder="5" inputmode="decimal" autocomplete="off" enterkeyhint="done"/>
+            <select id="tenure-unit" class="affix-select right" aria-label="Tenure unit">
+              <option value="years" selected>yrs</option>
+              <option value="months">mo</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-calculate" id="emi-calc-btn">Calculate EMI</button>
+
+      <div class="result-box" id="emi-results" hidden>
+        <div class="emi-headline">
+          <span>Monthly EMI</span>
+          <strong id="emi-val">-</strong>
+        </div>
+        <div class="ratio-bar" id="emi-ratio-bar" aria-hidden="true">
+          <div class="ratio-principal" id="ratio-principal"></div>
+          <div class="ratio-interest" id="ratio-interest"></div>
+        </div>
+        <div class="ratio-legend">
+          <span><i class="dot dot-principal"></i>Principal <strong id="legend-principal">-</strong></span>
+          <span><i class="dot dot-interest"></i>Interest <strong id="legend-interest">-</strong></span>
+        </div>
+        <div class="emi-grid">
+          <div><span>Total Interest</span><strong id="interest-val">-</strong></div>
+          <div><span>Total Payment</span><strong id="total-val">-</strong></div>
+        </div>
+        <button class="chip-btn" id="toggle-schedule">Show yearly breakdown</button>
+        <div class="schedule-wrap" id="schedule-wrap" hidden>
+          <table class="schedule-table" id="schedule-table">
+            <thead><tr><th>Year</th><th>Principal</th><th>Interest</th><th>Balance</th></tr></thead>
+            <tbody id="schedule-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Age / Date Calculator -->
+    <section id="age-date" class="calc-section">
+      <div class="segmented" id="date-mode-toggle">
+        <button class="seg-btn active" data-mode="diff">Difference</button>
+        <button class="seg-btn" data-mode="addsub">Add / Subtract</button>
+      </div>
+
+      <div id="date-diff-panel">
+        <div class="form-row two-col">
+          <div class="form-group">
+            <label for="start-date">Start Date</label>
+            <input type="date" id="start-date" />
+          </div>
+          <div class="form-group">
+            <label for="end-date">End Date</label>
+            <input type="date" id="end-date" />
+          </div>
+        </div>
+        <button class="btn-calculate" id="age-calc-btn">Calculate Difference</button>
+        <div class="result-box" id="age-results" hidden>
+          <h3 id="age-diff-main">-</h3>
+          <div class="emi-grid">
+            <div><span>Total Days</span><strong id="age-days">-</strong></div>
+            <div><span>Total Weeks</span><strong id="age-weeks">-</strong></div>
+            <div><span>Total Months</span><strong id="age-months">-</strong></div>
+            <div><span>Total Hours</span><strong id="age-hours">-</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="date-addsub-panel" hidden>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="base-date">Base Date</label>
+            <input type="date" id="base-date" />
+          </div>
+        </div>
+        <div class="form-row two-col">
+          <div class="form-group">
+            <label for="offset-days">Days</label>
+            <input type="text" id="offset-days" placeholder="e.g., 45" inputmode="numeric" autocomplete="off" enterkeyhint="done"/>
+          </div>
+          <div class="form-group">
+            <span class="field-label">Direction</span>
+            <div class="segmented small" id="offset-direction" role="group" aria-label="Direction">
+              <button class="seg-btn active" data-dir="add">Add</button>
+              <button class="seg-btn" data-dir="sub">Subtract</button>
+            </div>
+          </div>
+        </div>
+        <button class="btn-calculate" id="addsub-calc-btn">Calculate Date</button>
+        <div class="result-box" id="addsub-results" hidden>
+          <span>Resulting Date</span>
+          <h3 id="addsub-date-main">-</h3>
+          <p id="addsub-weekday">-</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Unit Converter -->
+    <section id="convert" class="calc-section">
+      <div class="chip-row" id="convert-categories">
+        <button class="chip-tab active" data-cat="length">Length</button>
+        <button class="chip-tab" data-cat="weight">Weight</button>
+        <button class="chip-tab" data-cat="temperature">Temp</button>
+        <button class="chip-tab" data-cat="area">Area</button>
+        <button class="chip-tab" data-cat="volume">Volume</button>
+        <button class="chip-tab" data-cat="speed">Speed</button>
+        <button class="chip-tab" data-cat="time">Time</button>
+        <button class="chip-tab" data-cat="data">Data</button>
+      </div>
+
+      <div class="convert-panel">
+        <div class="convert-row">
+          <div class="convert-field">
+            <label for="convert-from-val">From</label>
+            <input type="text" id="convert-from-val" inputmode="decimal" placeholder="1" autocomplete="off" enterkeyhint="done"/>
+            <select id="convert-from-unit" aria-label="From unit"></select>
+          </div>
+          <button class="icon-btn swap-btn" id="convert-swap" title="Swap units" aria-label="Swap units">
+            <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M7 7h11l-3-3 1.4-1.4L21.8 8l-5.4 5.4L15 12l3-3H7V7Zm10 10H6l3 3-1.4 1.4L2.2 16l5.4-5.4L9 12l-3 3h11v2Z"/></svg>
+          </button>
+          <div class="convert-field">
+            <label for="convert-to-val">To</label>
+            <input type="text" id="convert-to-val" inputmode="decimal" placeholder="0" readonly aria-label="Converted result"/>
+            <select id="convert-to-unit" aria-label="To unit"></select>
+          </div>
+        </div>
+      </div>
+
+      <div class="convert-quick" id="convert-quick"></div>
+    </section>
+
+  </div>
+
+  <div class="history-drawer" id="history-drawer">
+    <div class="history-drawer-header">
+      <span>Calculation Tape</span>
+      <div>
+        <button class="chip-btn" id="history-clear">Clear</button>
+        <button class="icon-btn" id="history-close" aria-label="Close history">✕</button>
+      </div>
+    </div>
+    <div class="history-list" id="history-list"></div>
+  </div>
+  <div class="history-backdrop" id="history-backdrop"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="script.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  }
+</script>
+</body>
+</html>
